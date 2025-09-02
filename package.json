@@ -1,0 +1,24 @@
+{
+  "name": "notifierserver",
+  "version": "1.0.0",
+  "description": "notifer server",
+  "type": "module",
+  "main": "src/index.js",
+  "x-commnent-debug-1": "parameter --inspect agar bisa debug code di vscode (dari devtools dilempar ke vscode",
+  "x-commennt-debug-2": "paramter --debug agar load api selalu dilakukan saat request tanpa module caching (untuk debug mjs di client, diset dari file .env ",
+  "scripts": {
+    "start": "node .",
+    "debug": "node --inspect . --debug",
+    "redis": "docker run -d -p 6379:6379 --name redis redis",
+    "redis-monitor": "docker exec -it redis redis-cli MONITOR"
+  },
+  "author": "agung nugroho",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+  }
+}
