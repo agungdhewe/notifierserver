@@ -1,0 +1,20 @@
+version: '3.8'
+
+
+networks:
+  dev:
+    external: true
+
+
+services:
+  notifierserver:
+    container_name: notifierserver
+    image: notifierserver
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - dev
+    restart: unless-stopped
