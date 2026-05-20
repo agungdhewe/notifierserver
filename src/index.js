@@ -6,46 +6,46 @@ const clients = new Map();
 
 
 function setupWebSocket(wss) {
-  wss.on('connection', (ws, req) => {
-    const url = new URL(req.url, `http://${req.headers.host}`);
-    const clientId = url.searchParams.get('clientId');
+	wss.on('connection', (ws, req) => {
+		const url = new URL(req.url, `http://${req.headers.host}`);
+		const clientId = url.searchParams.get('clientId');
 
-    if (!clientId) {
-      ws.close(1008, 'Missing clientId');
-      return;
-    }    
-   
-    clients.set(clientId, ws);
-    console.log(`Client connected: ${clientId}`);
+		if (!clientId) {
+			ws.close(1008, 'Missing clientId');
+			return;
+		}
 
-    ws.on('close', () => {
-      clients.delete(clientId);
-      console.log(`Client disconnected: ${clientId}`);
-    });
-  });
+		clients.set(clientId, ws);
+		console.log(`Client connected: ${clientId}`);
+
+		ws.on('close', () => {
+			clients.delete(clientId);
+			console.log(`Client disconnected: ${clientId}`);
+		});
+	});
 }
 
 function sendToClient(clientId, payload) {
-  const ws = clients.get(clientId);
-  if (ws && ws.readyState === ws.OPEN) {
-    ws.send(JSON.stringify(payload));
-  }
+	const ws = clients.get(clientId);
+	if (ws && ws.readyState === ws.OPEN) {
+		ws.send(JSON.stringify(payload));
+	}
 }
 
 function handleNotify(req, res) {
-  const { clientId, status, info } = req.body;
+	const { clientId, status, info } = req.body;
 
-  if (!clientId || !status) {
-    return res.status(400).json({ error: 'Missing fields' });
-  }
+	if (!clientId || !status) {
+		return res.status(400).json({ error: 'Missing fields' });
+	}
 
-  const payload = { status, info };
+	const payload = { status, info };
 
-  console.log('notify to ', clientId)
-  console.log(payload)
-  sendToClient(clientId, payload);
+	console.log('notify to ', clientId)
+	console.log(payload)
+	sendToClient(clientId, payload);
 
-  res.sendStatus(200);
+	res.sendStatus(200);
 }
 
 const app = express();
@@ -66,5 +66,6 @@ setupWebSocket(wss);
 
 const PORT = 8080;
 server.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
+	console.log(`Server listening on port ${PORT}`);
 });
+
