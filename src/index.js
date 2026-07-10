@@ -64,7 +64,7 @@ const wss = new WebSocketServer({ server });
 setupWebSocket(wss);
 
 
-const PORT = 8080;
+const PORT = process.env.PORT || 8989;
 server.listen(PORT, () => {
 	console.log(`Server listening on port ${PORT}`);
 });

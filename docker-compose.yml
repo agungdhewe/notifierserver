@@ -13,8 +13,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      - PORT=8989
     ports:
-      - "8080:8080"
+      - "${PORT:-8989}:${PORT:-8989}"
     networks:
       - dev
     restart: unless-stopped

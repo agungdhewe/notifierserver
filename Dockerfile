@@ -1,19 +1,36 @@
-FROM node:24
+# Stage 1: Install production dependencies
+FROM node:24-alpine AS builder
 
-# Set direktori kerja di dalam container
+# Set working directory
 WORKDIR /app
 
-# Salin file package.json dan package-lock.json untuk instalasi dependensi
+# Copy package files
 COPY package*.json ./
 
-# Install dependensi (gunakan --production jika hanya butuh untuk runtime)
-RUN npm install --production
+# Install only production dependencies
+RUN npm ci --only=production
 
-# Salin seluruh source code ke dalam container
-COPY . .
+# Stage 2: Production runner
+FROM node:24-alpine AS runner
 
-# Tentukan port yang digunakan oleh aplikasi
-EXPOSE 8080
+# Set working directory
+WORKDIR /app
 
-# Jalankan aplikasi
+# Set NODE_ENV to production
+ENV NODE_ENV=production
+
+# Copy dependencies from builder stage
+COPY --from=builder /app/node_modules ./node_modules
+COPY package*.json ./
+
+# Copy source code
+COPY src ./src
+
+# Expose port
+EXPOSE 8989
+
+# Use non-root user for security
+USER node
+
+# Run the application
 CMD ["node", "src/index.js"]
