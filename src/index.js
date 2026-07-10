@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import http from 'node:http'
 import { WebSocketServer } from 'ws';
@@ -64,7 +65,7 @@ const wss = new WebSocketServer({ server });
 setupWebSocket(wss);
 
 
-const PORT = process.env.PORT || 8989;
+const PORT = process.env.PORT || 8080;
 server.listen(PORT, () => {
 	console.log(`Server listening on port ${PORT}`);
 });
