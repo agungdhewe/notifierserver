@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Ambil PORT dari .env jika ada, fallback ke 8080
+PORT=$(grep -v '^#' .env 2>/dev/null | grep -E '^PORT=' | cut -d '=' -f2 | tr -d ' "\r\n')
+PORT=${PORT:-8080}
+
+echo "Memeriksa port $PORT..."
+
+# Cek dan kill process yang memakai port tersebut
+if command -v fuser >/dev/null 2>&1; then
+  fuser -k "${PORT}/tcp" >/dev/null 2>&1
+elif command -v lsof >/dev/null 2>&1; then
+  PID=$(lsof -ti :"$PORT")
+  if [ -n "$PID" ]; then
+    echo "Mematikan proses (PID: $PID) pada port $PORT..."
+    kill -9 $PID 2>/dev/null
+  fi
+fi
+
+npm run start
+

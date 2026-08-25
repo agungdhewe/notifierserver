@@ -1,0 +1,28 @@
+### 1. Inisialisasi Docker Buildx (Hanya perlu sekali diawal)
+docker buildx create --name multiarch-builder --use
+docker buildx inspect --bootstrap
+
+### 2. Build & Push Multi-Platform Image dengan Versi (linux/amd64 & linux/arm64)
+# Bisa memasang multiple tag (-t) sekaligus, misalnya versi spesifik (v1.0.0) dan latest:
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  -t <username>/notifierserver:1.1.0 \
+  -t <username>/notifierserver:latest \
+  --push .
+
+### 3. Build Multi-Platform untuk Local Docker Daemon (Single Platform: amd64 / arm64)
+# Jika ingin build arsitektur tertentu dan langsung disimpan ke Docker lokal:
+docker buildx build --platform linux/amd64 -t notifierserver:1.1.0 -t notifierserver:latest --load .
+
+
+
+# ### 4. Run Container
+# docker run -d \
+#   --name notifierserver \
+#   --network dev \
+#   -p 8989:8989 \
+#   --restart unless-stopped \
+#   <username>/notifierserver:latest
+
+
+
